@@ -1,10 +1,10 @@
 const mongoose=require("mongoose");
 const urlSchema=new mongoose.Schema({
-    urlFull:{
+    FullURL:{
         type:String,
         required:true
     },
-    urlShortId:{
+    URLShortId:{
         type:String,
         required:true,
         unique:true
@@ -17,4 +17,5 @@ const urlSchema=new mongoose.Schema({
 
 const urlModel= mongoose.model('url',urlSchema);
 
-module.exports={urlModel};
+
+module.exports={urlModel}
