@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <%- include('./partials/USER_authCSS.ejs') %>
+    <%- include('./partials/commonCSS.ejs') %>
+      <style>
+        .alert {
+          max-height: 24px;
+          min-height: 12px;
+          max-width: 100%;
+          overflow: auto;
+        }
+      </style>
+      <title>URL-mini</title>
+</head>
+
+<body class="d-flex align-items-center py-4 bg-body-tertiary">
+  <main class="form-signup w-100 m-auto">
+    <% if (locals.error) { %>
+      <div class="alert alert-danger d-flex align-items-center" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="1em" height="2em" role="img" aria-label="Danger:">
+          <use xlink:href="#exclamation-triangle-fill" />
+        </svg>
+        <div>
+          <%= error %>
+        </div>
+      </div>
+      <% } %>
+        <% if (locals.data) { %>
+          <div class="alert alert-success d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="1em" height="1em" role="img" aria-label="Success:">
+              <use xlink:href="#check-circle-fill" />
+            </svg>
+            <div>
+              <%= locals.data %>
+            </div>
+          </div>
+          <% } %>
+            <form action="/user/signup" method="post">
+              <h1 class="h1 mb-4 mt-4 fw-bold">URL-mini</h1>
+              <h1 class="h4 mb-1 fw-normal">Welcome!</h1>
+              <h1 class="h6 mb-3 fw-normal">Please enter yor details</h1>
+
+              <div class="form-floating mb-3">
+                <input type="text" name="Username" class="form-control" id="Username"
+                  placeholder="John Doe/John_Doe/JohnDoe_09" required>
+                <label for="Username">Username</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="email" name="Email" class="form-control" id="Email" placeholder="name@example.com"
+                  required>
+                <label for="Email">Email address</label>
+              </div>
+              <div class="form-floating">
+                <input type="password" name="Password" class="form-control" id="Password" placeholder="Password"
+                  required>
+                <label for="Password">Password</label>
+              </div>
+              <button class="btn btn-dark w-100 mt-3 py-2" id="submit" type="submit">Register</button>
+              <p class="mt-3 text-center">Already a User?<a href="/user/signin">Sign-In</a></p>
+              <p class="mt-4 mb-3 text-body-secondary">&copy; URL-mini</p>
+            </form>
+  </main>
+    <script>
+
+      // Cache form elements to avoid redundant lookups
+      const Username = document.getElementById('Username');
+      const Email = document.getElementById('Email');
+      const Password = document.getElementById('Password');
+      const submitButton = document.getElementById('submit');
+
+      // Validation Regex
+      const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,20}$/;
+      const usernameRegex = /^[0-9A-Za-z]{3,16}$/;
+      const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
+
+      // Function to show validation errors
+      const showValidationError = (inputElement, message) => {
+        inputElement.classList.add('is-invalid');
+        inputElement.classList.remove('is-valid');
+
+        // Create error message element if not exists
+        let errorDiv = inputElement.nextElementSibling;
+        if (!errorDiv || !errorDiv.classList.contains('invalid-feedback')) {
+          errorDiv.remove();
+          errorDiv = document.createElement('div');
+          errorDiv.classList.add('invalid-feedback', 'alert-danger');
+          inputElement.parentNode.appendChild(errorDiv);
+          errorDiv.textContent = message;
+        }
+      };
+
+      // Function to show valid feedback
+      const showValid = (inputElement) => {
+        inputElement.classList.remove('is-invalid');
+        inputElement.classList.add('is-valid');
+
+        // Remove error message if input is valid
+        const errorDiv = inputElement.nextElementSibling;
+        if (errorDiv && errorDiv.classList.contains('invalid-feedback')) {
+          errorDiv.remove();
+        }
+      };
+
+      // Validation function for inputs
+      const validateInput = (inputElement, regex, errorMessage) => {
+        if (!regex.test(inputElement.value)) {
+          showValidationError(inputElement, errorMessage);
+          return false;
+        } else {
+          showValid(inputElement);
+          return true;
+        }
+      };
+
+      // Real-time validation (optional)
+      Username.addEventListener('input', () => validateInput(Username, usernameRegex, 'Username must be 3-16 alphanumeric characters.'));
+      Email.addEventListener('input', () => validateInput(Email, emailRegex, 'Please enter a valid email address.'));
+      Password.addEventListener('input', () => validateInput(Password, passwordRegex, 'Password must be 8-20 characters, include a digit, upper and lowercase letters, and a special character.'));
+
+      // Submit event handler
+      document.querySelector('form').addEventListener('submit', (e) => {
+        const isUsernameValid = validateInput(Username, usernameRegex, 'Username must be 3-16 alphanumeric characters.');
+        const isEmailValid = validateInput(Email, emailRegex, 'Please enter a valid email address.');
+        const isPasswordValid = validateInput(Password, passwordRegex, 'Password must be 8-20 characters, include a digit, upper and lowercase letters, and a special character.');
+
+        if (!isUsernameValid || !isEmailValid || !isPasswordValid) {
+          e.preventDefault(); // Prevent form submission if any validation fails
+        }
+      });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <%- include('./partials/commonCSS.ejs') %>
+      <style>
+        .btn-light,
+        .btn-light:hover,
+        .btn-light:focus {
+          color: #333;
+          text-shadow: none;
+          /* Prevent inheritance from `body` */
+        }
+      </style>
+      <title>URL-mini</title>
+</head>
+
+<body>
+  <div class="sticky-top">
+    <%- include('./partials/navbar.ejs') %>
+  </div>
+
+
+  <!-- Wave Section and Header -->
+  <div class="head" id="wave">
+    <svg width="100%" height="100%" id="svg" viewBox="0 0 1440 690" xmlns="http://www.w3.org/2000/svg"
+      class="transition duration-300 ease-in-out delay-150">
+      <path
+        d="M 0,700 L 0,175 C 169.47,206.2 338.93,237.4 519,227 C 699.07,216.6 889.73,164.6 1045,149 C 1200.27,133.4 1320.13,154.2 1440,175 L 1440,700 L 0,700 Z"
+        stroke="none" fill="#d3d8dc" fill-opacity="0.53"
+        class="transition-all duration-300 ease-in-out delay-150 path-0" transform="rotate(-180 720 350)"></path>
+      <path
+        d="M 0,700 L 0,408 C 160.93,412.13 321.87,416.27 475,416 C 628.13,415.73 773.47,411.07 933,409 C 1092.53,406.93 1266.27,407.47 1440,408 L 1440,700 L 0,700 Z"
+        stroke="none" fill="#d3d8dc" fill-opacity="1" class="transition-all duration-300 ease-in-out delay-150 path-1"
+        transform="rotate(-180 720 350)"></path>
+    </svg>
+  </div>
+  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="mb-auto px-3">
+      <h1>Simplify your URLs.</h1>
+      <p class="lead">Welcome to <b class="fw-bold">URL-mini</b>, your go-to URL shortener. Provide your long URL
+        and instantly get a clean and short link in moments.</p>
+      <p class="lead">
+        <% if (locals.data) { %>
+          <a href="/user/signup" class="btn btn-lg btn-light fw-bold border-white bg-white" role="button">Get
+            Started</a>
+          <% } else { %>
+            <a href="/user/signup" class="btn btn-lg btn-light fw-bold border-white bg-white" role="button">Get
+              Started</a>
+            <% } %>
+      </p>
+    </header>
+  </div>
+
+
+  <!-- Hero Section -->
+  <section id="About">
+    <div class="mb-3 center" data-bs-theme="dark">
+      <div class="container col-xxl-8 px-4 py-5">
+        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+          <div class="col-10 col-sm-8 col-lg-6">
+            <img src="/images/KrQhcHoP_2x.jpg" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700"
+              height="500" loading="lazy">
+          </div>
+          <div class="col-lg-6">
+            <h1 class="display-5 fw-bold lh-1 mb-3">URL-mini</h1>
+            <p class="lead">Welcome to <b class="fw-bold">URL-mini</b>, your go-to URL shortener. Shortened URLs are
+              cleaner, easier to read, and simpler to share, especially on platforms with character limits.</p>
+            <p class="lead">Perfect for sharing links on social media, in emails, or anywhere you need a simple,
+              trackable URL.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+              <a href="/user/signup" class="btn btn-dark btn-lg px-4 me-md-2">Register for free</a>
+              <a href="/user/signin" class="btn btn-outline-secondary btn-lg px-4">Log in</a>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="Features">
+    <div class="container px-4 py-5">
+      <h2 class="pb-2 border-bottom">Features</h2>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-5 py-5">
+        <div class="feature col d-flex align-items-start">
+          <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em">
+            <use xlink:href="#link" />
+          </svg>
+          <div>
+            <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">Short URL</h3>
+            <p>Shortened URLs are cleaner, easier to read, and simpler to share.</p>
+          </div>
+        </div>
+        <div class="feature col d-flex align-items-start">
+          <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em">
+            <use xlink:href="#cpu-fill" />
+          </svg>
+          <div>
+            <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">Unique links</h3>
+            <p>Get your Unique ShortId from among 3,500 billion possible combinations.</p>
+          </div>
+        </div>
+        <div class="feature col d-flex align-items-start">
+          <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em">
+            <use xlink:href="#table" />
+          </svg>
+          <div>
+            <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">Analysis</h3>
+            <p>Easily analyze data through our tabular data visualization.</p>
+          </div>
+        </div>
+        <div class="feature col d-flex align-items-start">
+          <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em">
+            <use xlink:href="#home" />
+          </svg>
+          <div>
+            <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">User-Friendly UI</h3>
+            <p>A clear, minimalist design for better user experience.</p>
+          </div>
+        </div>
+        <div class="feature col d-flex align-items-start">
+          <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em">
+            <use xlink:href="#speedometer2" />
+          </svg>
+          <div>
+            <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">Dashboard</h3>
+            <p>Useful for marketing and engagement analysis.</p>
+          </div>
+        </div>
+        <div class="feature col d-flex align-items-start">
+          <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em">
+            <use xlink:href="#tools" />
+          </svg>
+          <div>
+            <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">Tools</h3>
+            <p>Manage your short links easily with our tools.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="container">
+    <footer class="py-3 my-4">
+      <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+        <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>
+        <li class="nav-item"><a href="#Features" class="nav-link px-2 text-body-secondary">Features</a></li>
+        <li class="nav-item"><a href="#About" class="nav-link px-2 text-body-secondary">About</a></li>
+        <li class="nav-item"><a href=" #" class="nav-link px-2 text-body-secondary">FAQs</a></li>
+      </ul>
+      <h5 class="h5 text-center fw-bold">&copy; URL-mini</h5>
+      <p class="text-center text-body-secondary">Developed by Danyal Ansari. A simple web application to minimize a
+        given URL.</p>
+    </footer>
+  </div>
+</body>
+
+</html>

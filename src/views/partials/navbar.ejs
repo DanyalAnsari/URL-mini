@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background:#121212;" aria-label="Eighth navbar example">
+    <div class="container">
+      <a class="navbar-brand" href="#">URL-mini</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample07" aria-controls="navbarsExample07" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExample07">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#About">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#Features" >Features</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Account</a>
+            <ul class="dropdown-menu">
+              <% if (locals.data) { %>
+                <li><a class="dropdown-item" href="home/dashboard">Dashboard</a></li>
+                <li><a class="dropdown-item" href="/user/signout">Sign-Out</a></li>
+                <% } else { %>
+                  <li><a class="dropdown-item" href="/user/signin">Sign-In</a></li>
+                  <li><a class="dropdown-item" href="/user/signup">Create Acoount</a></li>
+              <% } %>           
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
