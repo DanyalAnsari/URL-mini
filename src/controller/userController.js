@@ -59,7 +59,7 @@ const handleLogin = async (req, res) => {
 
 const handleLogOut=(req, res)=>{
     try {
-      return res.clearCookie('token').redirect('/home')
+      return res.clearCookie('token').redirect('/')
     } catch (error) {
        console.log(error)
       return res.render('error',{error:'Something went wrong'})
