@@ -1,9 +1,12 @@
 const router=require('express').Router();
-const {renderLoginView,renderRegisterationView,handleLogin,handleRegisteration}=require('../src/controller/userController')
+const { isAuthenticated } = require('../src/middleware/authMIddleware');
+const {renderLoginView,renderRegistrationView,handleLogin,handleRegistration,handleLogOut, handleUserDeletion}=require('../src/controller/userController')
 
-router.get('/signup', renderRegisterationView);
+router.get('/signup', renderRegistrationView);
 router.get('/signin', renderLoginView);
-router.post('/signup', handleRegisteration);
-router.post('/signin', handleLogin);
+router.get('/signout',isAuthenticated,handleLogOut)
+router.post('/signup',handleRegistration);
+router.post('/signin',handleLogin);
+router.delete('/',isAuthenticated,handleUserDeletion);
 
 module.exports=router

@@ -1,20 +1,21 @@
 const express = require('express');
-const mongoose =require("mongoose");
+const mongoose =require('mongoose');
 const path=require('path');
+const cookieParser=require('cookie-parser');
 require('dotenv').config();
 
-// module
-const staticRoute=require( "./routes/staticRoutes");
-const userRoute=require('./routes/userRoute')
+// modules
+const rootRoute=require('./routes/rootRoute');
+const userRoute=require('./routes/userRoute');
 const urlRoute=require( "./routes/urlRoutes");
 // values
 
-const PORT=8080;
+const PORT=process.env.PORT;
 const app=express();
 
 // connection
 
-mongoose.connect(process.env.MONGO_URI);
+mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.once('connected',()=>console.log('connection succesfull'));
 mongoose.connection.on('error',(err)=>console.log(`database error:${err}`));
 
@@ -23,12 +24,22 @@ mongoose.connection.on('error',(err)=>console.log(`database error:${err}`));
 app.set('views', path.resolve('./src/views'));
 app.set('view engine','ejs');
 
+//middlewares
 
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
-app.use('/' , staticRoute);
-app.use('/user', userRoute);
-app.use('/urls', urlRoute);
+app.use(cookieParser());
+app.use((err, req, res, next)=>{
+    console.error(err.stack);
+    res.staus(500).send('Something went wrong')
+})
+
+//Routes
+
+app.use(express.static('public'));
+app.use('/', rootRoute);
+app.use('/home/user' , userRoute);
+app.use('/url', urlRoute);
 
 
-app.listen(PORT,()=>console.log(`application started at PORT:${PORT}`));
+app.listen(PORT,()=>console.log(`Application started at PORT:${PORT}`));

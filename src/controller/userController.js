@@ -1,53 +1,114 @@
-const { User } = require('../model/userModel');
-const { handlePasswordHashing, handlePasswordVerification }=require('../../auth/authentication')
+const { User } = require("../model/userModel");
+const {
+    handlePasswordVerification,
+    handleTokenGeneration,
+} = require("../../auth/authentication");
+const { urlModel } = require("../model/urlModel");
 
+// Render Signup (Registration) Page
+const renderRegistrationView = (req, res) => {
+    res.status(200).render("signup");
+};
 
-const renderRegisterationView = (req, res) => {
-    res.status(200).render('signup');
-}
-
+// Render Login Page
 const renderLoginView = (req, res) => {
-    res.status(200).render('signin');
-}
+    res.status(200).render("signin");
+};
 
-const handleRegisteration = async (req, res) => {
+// Handle User Registration
+const handleRegistration = async (req, res) => {
     const { Username, Email, Password } = req.body;
-    if (!Username | !Email | !Password) {
-        return res.status(400).json({ message: 'All fields required' });
+
+    // Check if all fields are provided
+    if (!Username || !Email || !Password) {
+        return res.status(400).render("signup", { error: "All fields are required." });
+    }
+
+    try {
+        // Check if a user with the same email already exists
+        const existingUser = await User.findOne({ Email });
+        if (existingUser) {
+            return res.render("signup", { error: "User already exists." });
+        }
+
+        // Hash the password and create the user        
+        const newUser = await User.create({ Username, Email, Password },);
+        const token = handleTokenGeneration(newUser);
+        res.status(201).cookie("token", token, { httpOnly: true, secure: true }).redirect("../dashboard");
+
+    } catch (error) {
+        console.error("Registration Error:", error);
+        res.status(500).render("signup", { error: "Something went wrong. Please try again." });
+    }
+};
+
+// Handle User Login
+const handleLogin = async (req, res) => {
+    const { Email, Password } = req.body;
+
+    // Validate if both email and password are provided
+    if (!Email || !Password) {
+        return res.status(400).render('signin', { error: 'All fields are required.' });
+    }
+
+    try {
+        // Check if the user exists in the database
+        const user = await User.findOne({Email:Email})
+        if (user) {
+            const isValid = handlePasswordVerification(Password, user.Password);
+            if (isValid) {
+                const token = handleTokenGeneration(user);
+                return res.status(200).cookie("token", token).redirect("../dashboard");
+            } else {
+                return res.status(404).render("signin", { error: "Email or Password not valid" });
+            }
+        } else {
+            return res.status(404).render("signin", { error: "User not found" });
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).render("signin", { error: "Something went wrong" });
+    }
+};
+
+const handleLogOut = (req, res) => {
+    try {
+        return res.clearCookie("token").redirect("../");
+    } catch (error) {
+        console.log(error.message);
+        return res.render("error", { error: "Something went wrong" });
+    }
+};
+
+const handleUserDeletion = async (req, res) => {
+    const user = res.locals.user;
+    if (!user) {
+        return res
+            .status(404)
+            .render("error", { error: "User not found or Bad request" });
     }
     try {
-         const hashPassword=handlePasswordHashing(Password)
-        const user = await User.create({ Username, Email, Password:hashPassword });
-        res.status(201).json({ message: 'Successfully Registered' });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: 'Something went wrong' });
-    }
-}
-
-const handleLogin =async (req, res) => {
-    const { Email, Password } = req.body;
-    if (!Email | !Password) {
-        return res.status(400).json({ message: 'All fields required' });;
-    }
-    try{
-        const result= await User.findOne({Email});
-        if(result){
-             const {isValid}= handlePasswordVerification(Password, result.Password);
-             if(isValid){
-                return res.status(200).json({message:'Logged In successfully'});
-             }
-             else{
-                return res.status(404).json({message:'Email or Password not valid'});
-             }
-           
-        }else{
-            return res.status(404).json({message:'User not found'});
+        const DeleteUser = await User.findOne({ _id: user.id });
+        if (User) {
+            const isDeletedUser = await User.deleteOne({ _id: DeleteUser._id });
+            if (isDeletedUser) {
+                const deletedRecords = await urlModel.deleteMany({
+                    UserID: isDeletedUser._id,
+                });
+                return res.redirect("/home");
+            }
         }
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: 'Something went wrong' });
+        return res.redirect("../");
+    } catch (error) {
+        console.log(error.message);
+        return res.redirect("error", { error: "Something went wrong" });
     }
-}
-
-module.exports={renderLoginView,renderRegisterationView,handleLogin,handleRegisteration};
+};
+module.exports = {
+    renderLoginView,
+    renderRegistrationView,
+    handleLogin,
+    handleRegistration,
+    handleLogOut,
+    handleUserDeletion,
+};

@@ -4,131 +4,158 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <style>
-    body {
-      background-color: rgba(0, 0, 0, 0.904);
-      font-family: sans-serif;
-      color: #000;
-    }
-
-    .super {
-      padding: 0px 24px;
-    }
-
-    .center {
-      border-radius: 10px;
-      margin: 50px auto;
-      padding: 24px 36px;
-      background-color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0px 0px 16px rgba(29, 28, 28, 0.793);
-    }
-  </style>
-  <title>URL-mini</title>
+  <%- include('./partials/commonCSS.ejs') %>
+      <style>
+        .btn-light,
+        .btn-light:hover,
+        .btn-light:focus {
+          color: #333;
+          text-shadow: none;
+          /* Prevent inheritance from `body` */
+        }
+      </style>
+      <title>URL-mini</title>
 </head>
 
 <body>
-  <nav class="navbar sticky-sm-top bg-dark border-bottom border-body" data-bs-theme="dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="http://localhost:8080/">URL-mini</a>
-    </div>
-  </nav>
-  <div class="super">
-    <div class="center">
-      <div class="mb-3 center" data-bs-theme="dark">
-        <form action="/url/" method="post">
-          <h4><label for="url" class="form-label">Enter Your URL</label></h4>
-          <input type="text" class="form-control" name="url" id="url" placeholder="http://example.com" required><br>
-          <div class="d-grid gap-2 col-6 mx-auto">
-            <button class="btn btn-primary ">Generate</button>
+  <div class="sticky-top">
+    <%- include('./partials/navbar.ejs') %>
+  </div>
+
+
+  <!-- Wave Section and Header -->
+  <div class="head" id="wave">
+    <svg width="100%" height="100%" id="svg" viewBox="0 0 1440 690" xmlns="http://www.w3.org/2000/svg"
+      class="transition duration-300 ease-in-out delay-150">
+      <path
+        d="M 0,700 L 0,175 C 169.47,206.2 338.93,237.4 519,227 C 699.07,216.6 889.73,164.6 1045,149 C 1200.27,133.4 1320.13,154.2 1440,175 L 1440,700 L 0,700 Z"
+        stroke="none" fill="#d3d8dc" fill-opacity="0.53"
+        class="transition-all duration-300 ease-in-out delay-150 path-0" transform="rotate(-180 720 350)"></path>
+      <path
+        d="M 0,700 L 0,408 C 160.93,412.13 321.87,416.27 475,416 C 628.13,415.73 773.47,411.07 933,409 C 1092.53,406.93 1266.27,407.47 1440,408 L 1440,700 L 0,700 Z"
+        stroke="none" fill="#d3d8dc" fill-opacity="1" class="transition-all duration-300 ease-in-out delay-150 path-1"
+        transform="rotate(-180 720 350)"></path>
+    </svg>
+  </div>
+  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="mb-auto px-3">
+      <h1>Simplify your URLs.</h1>
+      <p class="lead">Welcome to <b class="fw-bold">URL-mini</b>, your go-to URL shortener. Provide your long URL
+        and instantly get a clean and short link in moments.</p>
+      <p class="lead">
+        <% if (locals.User) { %>
+          <a href="/home/dashboard" class="btn btn-lg btn-light fw-bold border-white bg-white" role="button">Get
+            Started</a>
+          <% } else { %>
+            <a href="/home/user/signup" class="btn btn-lg btn-light fw-bold border-white bg-white" role="button">Get
+              Started</a>
+            <% } %>
+      </p>
+    </header>
+  </div>
+
+
+  <!-- Hero Section -->
+  <section id="About">
+    <div class="mb-3 center" data-bs-theme="dark">
+      <div class="container col-xxl-8 px-4 py-5">
+        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+          <div class="col-10 col-sm-8 col-lg-6">
+            <img src="/images/KrQhcHoP_2x.jpg" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700"
+              height="500" loading="lazy">
           </div>
-        </form>
-      </div>
-      <% if (locals.id) { %>
-        <div class="center">
-          <div class="col-sm-6 mb-3 mb-sm-0">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">URL Generated: http://localhost:8080/url/<%=id %>
-                </p>
-                <a href="http://localhost:8080/url/<%=id %>" class="btn btn-primary">Visit Now</a>
-              </div>
+          <div class="col-lg-6">
+            <h1 class="display-5 fw-bold lh-1 mb-3">URL-mini</h1>
+            <p class="lead">Welcome to <b class="fw-bold">URL-mini</b>, your go-to URL shortener. Shortened URLs are
+              cleaner, easier to read, and simpler to share, especially on platforms with character limits.</p>
+            <p class="lead">Perfect for sharing links on social media, in emails, or anywhere you need a simple,
+              trackable URL.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+              <a href="/home/user/signup" class="btn btn-dark btn-lg px-4 me-md-2">Register for free</a>
+              <a href="/home/user/signin" class="btn btn-outline-secondary btn-lg px-4">Log in</a>
             </div>
           </div>
         </div>
-        <% } %>
-        <div>
-          <button class="btn btn-primary" id="signup" onclick='handleRedirectionSignUp()'>Regiter</button>
-            <button class="btn btn-primary" id="signin" onclick='handleRedirectionSignIn()'>Login</button>
-           </div>
-          <% if (locals.urls) { %>
-            <div class="center table">
-              <h1>List of URL's</h1><br>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">List</th>
-                    <th scope="col">Short ID's</th>
-                    <th scope="col">Redirected URL's</th>
-                    <th scope="col">Visits</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% urls.forEach((url, index)=> { %>
-                    <tr>
-                      <th scope="row">
-                        <%= index+1 %>
-                      </th>
-                      <td>
-                        <%= url.urlShortId %>
-                      </td>
-                      <td>
-                        <%= url.urlFull %>
-                      </td>
-                      <td>
-                        <%= url.visits.length %>
-                      </td>
-                    </tr>
-                    <% }) %>
-                </tbody>
-              </table>
-              <% } %>
-            </div>
-            <div class="center">
-              <h5>©Danyal Ansari</h5>
-              <p>This is a Simple Web-Application developed to minimize a given URL.</p>
-              <h6>Developed by Danyal Ansari</h6>
-            </div>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-              integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-              crossorigin="anonymous"></script>
-              <script>
-                const btnSignup=document.getElementById('signup');
-                const btnSignin=document.getElementById('signin');
+      </div>
+  </section>
 
-                const handleRedirectionSignUp=()=>{
-                  try {
-                    window.location.href='http://localhost:8080/user/signup';
-                  } catch (error) {
-                    console.log(error);
-                  }
-                }
-                const handleRedirectionSignIn=()=>{
-                  try{
-                    window.location.href='http://localhost:8080/user/signin';
-                  } catch (error) {
-                    console.log(error);
-                  }
-                }
+  <!-- Features Section -->
+  <section id="Features">
+    <div class="container px-4 py-5">
+      <h2 class="pb-2 border-bottom">Features</h2>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-5 py-5">
+        <div class="feature col d-flex align-items-start">
+          <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em">
+            <use xlink:href="#link" />
+          </svg>
+          <div>
+            <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">Short URL</h3>
+            <p>Shortened URLs are cleaner, easier to read, and simpler to share.</p>
+          </div>
+        </div>
+        <div class="feature col d-flex align-items-start">
+          <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em">
+            <use xlink:href="#cpu-fill" />
+          </svg>
+          <div>
+            <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">Unique links</h3>
+            <p>Get your Unique ShortId from among 3,500 billion possible combinations.</p>
+          </div>
+        </div>
+        <div class="feature col d-flex align-items-start">
+          <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em">
+            <use xlink:href="#table" />
+          </svg>
+          <div>
+            <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">Analysis</h3>
+            <p>Easily analyze data through our tabular data visualization.</p>
+          </div>
+        </div>
+        <div class="feature col d-flex align-items-start">
+          <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em">
+            <use xlink:href="#home" />
+          </svg>
+          <div>
+            <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">User-Friendly UI</h3>
+            <p>A clear, minimalist design for better user experience.</p>
+          </div>
+        </div>
+        <div class="feature col d-flex align-items-start">
+          <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em">
+            <use xlink:href="#speedometer2" />
+          </svg>
+          <div>
+            <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">Dashboard</h3>
+            <p>Useful for marketing and engagement analysis.</p>
+          </div>
+        </div>
+        <div class="feature col d-flex align-items-start">
+          <svg class="bi text-body-secondary flex-shrink-0 me-3" width="1.75em" height="1.75em">
+            <use xlink:href="#tools" />
+          </svg>
+          <div>
+            <h3 class="fw-bold mb-0 fs-4 text-body-emphasis">Tools</h3>
+            <p>Manage your short links easily with our tools.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-              btnSignup.addEventListener('click', handleRedirectionSignUp)
-              btnSignin.addEventListener('click', handleRedirectionSignIn)
-              </script>
+  <!-- Footer -->
+  <div class="container">
+    <footer class="py-3 my-4">
+      <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+        <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Home</a></li>
+        <li class="nav-item"><a href="#Features" class="nav-link px-2 text-body-secondary">Features</a></li>
+        <li class="nav-item"><a href="#About" class="nav-link px-2 text-body-secondary">About</a></li>
+        <li class="nav-item"><a href=" #" class="nav-link px-2 text-body-secondary">FAQs</a></li>
+      </ul>
+      <h5 class="h5 text-center fw-bold">&copy; URL-mini</h5>
+      <p class="text-center text-body-secondary">Developed by Danyal Ansari. A simple web application to minimize a
+        given URL.</p>
+    </footer>
+  </div>
 </body>
+
 </html>

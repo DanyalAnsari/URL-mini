@@ -9,11 +9,29 @@ const urlSchema=new mongoose.Schema({
         required:true,
         unique:true
     },
-    visits:[{
+    UserID:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User',
+        requred:true
+    },
+    Visits:[{
         time:{
         type:Number
     }
 }]},{timeStamp:true});
+
+urlSchema.pre('save', function(next){
+    const url=this;
+
+    url.FullURL=url.FullURL.trim();
+    const urlRegex=/^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+)(\/.*)?$/;
+    if(urlRegex.test(url.FullURL)){
+       return next()
+    }else{
+        return next(new Error('Invalid URL format'));
+    }
+
+})
 
 const urlModel= mongoose.model('url',urlSchema);
 

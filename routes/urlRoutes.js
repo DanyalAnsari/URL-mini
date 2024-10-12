@@ -1,14 +1,13 @@
 const express =require("express");
-const {urlHandler}=require('../src/urlHandler/urlHandler');
-const {generateShortId, redirectURL, Analytics}=require("../src/controller/urlController")
+const {generateShortId, redirectURL, removeUrlRecord}=require("../src/controller/urlController");
+const { isAuthenticated } = require("../src/middleware/authMIddleware");
 const router=express.Router();
 
-router.get('/:shortid', redirectURL)
 
-router.get('/getAnalytics/:shortid', Analytics)
+// router.get('/getAnalytics/:user',isAuthenticated, Analytics)
 
-router.post('/',urlHandler ,generateShortId )
-
-// router.get('/', renderHome)
+router.post('/',isAuthenticated,generateShortId);
+router.get('/:shortId',redirectURL);
+router.delete('/:id', removeUrlRecord)
 
 module.exports=router;

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <%- include('./partials/commonCSS.ejs') %>
+    <style>
+      .bi {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+      }
+
+      @media (min-width: 768px) {
+        .sidebar .offcanvas-lg {
+          position: -webkit-sticky;
+          position: sticky;
+          top: 48px;
+        }
+
+        .navbar-search {
+          display: block;
+        }
+      }
+
+      .sidebar .nav-link {
+        font-size: .875rem;
+        font-weight: 500;
+      }
+
+      .sidebar .nav-link.active {
+        color: #2470dc;
+      }
+
+      .sidebar-heading {
+        font-size: .75rem;
+      }
+
+      /*
+   * Navbar
+   */
+
+      .navbar-brand {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+      }
+
+      .navbar .form-control {
+        padding: .75rem 1rem;
+      }
+    </style>
+    <title>URL-mini</title>
+</head>
+
+<body>
+  <navbar>
+    <%- include('./partials/userPageNavbar.ejs') %>
+  </navbar>
+  <header>
+    <%- include('./partials/userPageHeader.ejs') %>
+  </header>
+     <section>
+      <header class="navbar bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">URL-mini</a>
+        </header> 
+     </section>
+     <section class="px-4 py-3">
+    <h2>Statistics</h2>
+    <div class="table-responsive small" id="Statistics">
+      <table class="table table-hover table-sm">
+        <thead>
+          <tr>
+            <th scope="col">Copy</th>
+            <th scope="col">#</th>
+            <th scope="col">Short ID</th>
+            <th scope="col">Redirected URL</th>
+            <th scope="col">Visits</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (data && data.length > 0) { %>
+            <% data.forEach((URL, index) => { %>
+              <tr>
+                <td>
+                  <button class="btn copy" data-url="<%= URL.URLShortId %>" id="copy-btn-<%= index + 1 %>">
+                    Copy
+                  </button>
+                </td>
+                <th scope="row"><%= index + 1 %></th>
+                <td>
+                  <a href="/<%= URL.URLShortId %>" id="short-id-<%= index + 1 %>">
+                    <%= URL.URLShortId %>
+                  </a>
+                </td>
+                <td><%= URL.FullURL %></td>
+                <td><%= URL.Visits.length %></td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="5" class="text-center">No URLs found</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </section>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.2/dist/chart.umd.js"
+      integrity="sha384-eI7PSr3L1XLISH8JdDII5YN/njoSsxfbrkCTnJrzXt+ENP5MOVBxD+l6sEG4zoLp"
+      crossorigin="anonymous"></script>
+    <script src="dashboard.js"></script>
+    <script>/* globals Chart:false */
+
+      (() => {
+        'use strict'
+    
+        // Graphs
+        const ctx = document.getElementById('myChart')
+        // eslint-disable-next-line no-unused-vars
+        const myChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: [
+              'Sunday',
+              'Monday',
+              'Tuesday',
+              'Wednesday',
+              'Thursday',
+              'Friday',
+              'Saturday'
+            ],
+            datasets: [{
+              data: [
+                15339,
+                21345,
+                18483,
+                24003,
+                23489,
+                24092,
+                12034
+              ],
+              lineTension: 0,
+              backgroundColor: 'transparent',
+              borderColor: '#007bff',
+              borderWidth: 4,
+              pointBackgroundColor: '#007bff'
+            }]
+          },
+          options: {
+            plugins: {
+              legend: {
+                display: true
+              },
+              tooltip: {
+                boxPadding: 3
+              }
+            }
+          }
+        })
+      })()
+    </script>
+    <script>
+      const AccontDelete = document.getElementById('AccontDelete');
+      const copyBtn=document.get
+      console.log(copyBtn)
+      
+       copyBtn.addEventListener('click',(event)=>{
+         console.log(event.target.id)
+       })
+      AccontDelete.addEventListener('click', async () => {
+        const response = await fetch('/user/', { method: 'DELETE' });
+      })
+    </script>
+          <script>
+            // Select all buttons with the 'copy' class
+            const copyButtons = document.querySelectorAll('.copy');
+          
+            copyButtons.forEach(button => {
+              button.addEventListener('click', (e) => {
+                // Get the short URL ID from the button's data attribute
+                const shortId = button.getAttribute('data-url');
+                const fullURL = `${window.location.origin}/${shortId}`;
+          
+                // Copy the full URL to the clipboard
+                navigator.clipboard.writeText(fullURL).then(() => {
+                  // Optional: Give feedback to the user
+                  alert('Copied: ' + fullURL);
+                }).catch(err => {
+                  console.error('Failed to copy: ', err);
+                });
+              });
+            });
+          </script>
+</body>
+</html>
+

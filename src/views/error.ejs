@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <%- include('./partials/commonCSS.ejs') %>
+  <title>Error - URL-mini</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    .error-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      color: #333;
+    }
+
+    .error-container svg {
+      width: 100px;
+      height: 100px;
+      fill: #cb0202;
+    }
+
+    .error-title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin: 20px 0;
+      color: #cb0202;
+    }
+
+    .error-message {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .error-button {
+      background-color: #000000;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .error-button:hover {
+      background-color: #9dabbb;
+    }
+
+    @media (max-width: 768px) {
+      .error-title {
+        font-size: 2rem;
+      }
+
+      .error-message {
+        font-size: 1rem;
+      }
+
+      .error-container svg {
+        width: 80px;
+        height: 80px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="error-container">
+    <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+    <h1 class="error-title">Oops! Something Went Wrong</h1>
+    <p class="error-message">
+      <%= error %>
+    </p>
+    <a href="/" class="error-button">Return to Homepage</a>
+  </div>
+</body>
+
+</html>

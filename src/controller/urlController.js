@@ -2,60 +2,113 @@ const { nanoid } =require("nanoid");
 const { urlModel } = require("../model/urlModel");
 
 
-// const renderHome=(req, res)=>{
-//   res.render('')
-// }
+
+// Render home page
+
+const renderHome = (req, res) => {
+  const user = { ...res.locals.user, page: req.path.split('/')[0] };
+
+  res.render('home', { User: user || null });
+};
 
 
-const generateShortId=async(req, res)=>{
-  const {url}=req.body;
-  const shortID= nanoid(6);
-  try{
-   const urlDoc=await urlModel.create({
-    urlShortId:shortID,
-    urlFull:url,
-    visits:[] });
-    
-    return res.status(201).render('home',({id:shortID}))
-}catch(err){
-   return res.status(500).json({message:'something went wrong',error: err})
-}
-}
-const viewURL=(req, res)=>{
-    try{
-      const URLlist=urlModel.find({urlFull,urlShortId})
-      res.render('URL',({URL:URLlist}))
-    }catch(err){
-      return res.status(500).json({message:'something went wrong',error: err})
+// Redirect to full URL based on short ID
+
+const redirectURL = async (req, res) => {
+  try {
+    const link = await urlModel.findOneAndUpdate(
+      { URLShortId: req.params.shortId },
+      { $push: { Visits: { time: Date.now() } } },
+      { new: true }
+    );
+
+    if (!link) {
+      return res.status(404).render('error', { error: 'Invalid Short-Link' });
     }
 
+    res.redirect(link.FullURL);
+  } catch (err) {
+    console.error(err);
+    res.status(500).render('error', { error: 'Something went wrong' });
+  }
+};
+  
+
+// Generate a new short URL
+
+const generateShortId = async (req, res) => {
+  const { URL } = req.body;
+  const user = res.locals.user;
+
+  if (!URL) {
+    return res.status(400).render('error', { error: 'Invalid URL' });
+  }
+
+  const shortID = nanoid(7);
+
+  try {
+    await urlModel.create({
+      URLShortId: shortID,
+      FullURL: URL,
+      UserID: user._id,
+      Visits: []
+    });
+
+    res.status(201).redirect('/home/dashboard');
+  } catch (err) {
+    console.error(err);
+    res.status(500).render('error', { error: 'Failed to create short URL' });
+  }
+};
+
+//Delete the stored URL
+
+const removeUrlRecord=async(req, res)=>{
+  const {id}=req.params;
+  try{
+    const record=await urlModel.findByIdAndDelete({_id:id},{new:true})
+    if(record){
+      req.method='GET'
+      return  res.redirect(204,'/home/dashboard');
+    }
+    return res.status(500).render('error')
+  }catch(err){
+    console.error(err.message)
+   return res.status(500).render('error')
+  }
+
 }
 
-const Analytics=async(req, res)=>{
-  const shortid=req.params.shortid;
-  const result=await urlModel.findOne({urlShortId:shortid})
-  return res.json({
-   totalClicks:result.visits.length,
-   analytics: result.visits
-  })
-}
+// Fetch all URLs for a user
+const viewURL = async (req, res) => {
+  const user = { ...res.locals.user, page: req.path.split('/')[1] };
 
-const redirectURL=async(req, res)=>{
-  const shortid=req.params.shortid;
-  const link=await urlModel.findOneAndUpdate({urlShortId:shortid},{$push:{
-    visits:{time:Date.now()}
-  }})
-  console.log(link)
-  res.redirect(link.urlFull)
-}
+  try {
+    const URLlist = await urlModel.find({ UserID: user._id });
+    res.render('dashboard', { data: URLlist, User: user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).render('error', { error: 'Failed to load URLs' });
+  }
+};
+
+// Admin-only analytics
+const Analytics = async (req, res) => {
+  const user = res.locals.user;
+
+  if (user.User_Role !== 'ADMIN') {
+    return res.redirect('../');
+  }
+
+  try {
+    const records = await urlModel.find().populate('UserID').exec();
+    res.render('dashboard', { data: records, user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).render('error', { error: 'Failed to load analytics' });
+  }
+};
 
 
-const renderHome=async(req, res)=>{
-  const allUrl=await urlModel.find()
-  res.render('home', ({urls:allUrl}))
-}
 
-
-
-
-module.exports={generateShortId, redirectURL, Analytics,renderHome }
+module.exports={generateShortId, redirectURL, renderHome, viewURL, Analytics, removeUrlRecord };
