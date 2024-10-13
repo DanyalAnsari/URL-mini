@@ -6,7 +6,6 @@ const UserSchema = new mongoose.Schema({
   Username: {
     type: String,
     required: [true, 'Username is required'],
-    unique: true,
     trim: true,
     minlength: [3, 'Username must be at least 3 characters long'],
     maxlength: [16, 'Username cannot exceed 16 characters'],
@@ -22,7 +21,6 @@ const UserSchema = new mongoose.Schema({
   Password: {
     type: String,
     required: [true, 'Password is required'],
-    minlength: [6, 'Password must be at least 6 characters long'],
   },
   User_Role: {
     type: String,
@@ -34,6 +32,8 @@ const UserSchema = new mongoose.Schema({
 // Pre-save middleware to hash the password
 UserSchema.pre('save', async function (next) {
   const user = this;
+  
+  
 
   // Hash the password if it has been modified (or is new)
   if (!user.isModified('Password')) return next();
@@ -42,14 +42,9 @@ UserSchema.pre('save', async function (next) {
     user.Password = await handlePasswordHashing(user.Password)
     next();
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
-
-
-// Ensure uniqueness of fields
-UserSchema.index({ Email: 1 }, { unique: true });
-UserSchema.index({ Username: 1 }, { unique: true });
 
 // Model Creation
 const User = mongoose.model('User', UserSchema);

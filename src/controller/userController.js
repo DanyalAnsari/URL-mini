@@ -30,9 +30,11 @@ const handleRegistration = async (req, res) => {
         if (existingUser) {
             return res.render("signup", { error: "User already exists." });
         }
-
         // Hash the password and create the user        
-        const newUser = await User.create({ Username, Email, Password },);
+        const newUser = await User.create({Username:Username,
+            Email:Email,
+            Password:Password
+        });
         const token = handleTokenGeneration(newUser);
         res.status(201).cookie("token", token, { httpOnly: true, secure: true }).redirect("../dashboard");
 

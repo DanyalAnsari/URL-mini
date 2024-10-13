@@ -53,46 +53,45 @@
         <thead class="table-dark">
           <tr>
             <th scope="col">#</th>
+            <th scope="col">Actions</th>
             <th scope="col">Short ID</th>
-            <th scope="col" colspan="2">Redirected URL</th>
             <th scope="col">Visits</th>
-            <th scope="col" colspan="2">Actions</th>
+            <th scope="col" colspan="2">Redirected URL</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="table-group-divider">
           <% if (data && data.length> 0) { %>
           <% data.forEach((URL, index)=> { %>
             <tr>
             <th scope="row">
               <%= index + 1 %>
             </th>
-            <td>
-              <a href="/url/<%= URL.URLShortId %>" id="short-id-<%= index + 1 %>">
-                <%= URL.URLShortId %>
-              </a>
-            </td>
-            <td colspan="2">
-              <%= URL.FullURL %>
-            </td>
-            <td>
-              <%= URL.Visits.length %>
-            </td>
             <td colspan="1">
               <button type="button" class="btn copy" aria-label="Copy URL"
-                data-bs-toggle="popover" data-bs-content="Copied!"
-                data-url="<%= URL.URLShortId %>" data-id="<%= URL._id %>">
-                <svg class="bi d-block mx-auto mb-1" width="24" height="24">
-                  <use xlink:href="#copy" />
-                </svg>
-              </button>
-            </td>
-              <td colspan="1">
-              <button class="btn delete" aria-label="Delete URL" data-id="<%= URL._id %>">
-                <svg class="bi d-block mx-auto mb-1" width="24" height="24">
-                  <use xlink:href="#delete" />
-                </svg>
-              </button>
-            </td>
+              data-bs-toggle="popover" data-bs-content="Copied!"
+              data-url="<%= URL.URLShortId %>" data-id="<%= URL._id %>">
+              <svg class="bi d-block mx-auto mb-1" width="24" height="24">
+                <use xlink:href="#copy" />
+              </svg>
+            </button>
+          
+            <button class="btn delete" aria-label="Delete URL" data-id="<%= URL._id %>">
+              <svg class="bi d-block mx-auto mb-1" width="24" height="24">
+                <use xlink:href="#delete" />
+              </svg>
+            </button>
+          </td>
+          <td>
+            <a href="/url/<%= URL.URLShortId %>" id="short-id-<%= index + 1 %>">
+              <%= URL.URLShortId %>
+            </a>
+          </td>
+          <td>
+            <%= URL.Visits.length %>
+          </td>
+          <td colspan="2">
+            <%= URL.FullURL %>
+          </td>
           </tr>
           <% }) %>
           <% } else { %>
