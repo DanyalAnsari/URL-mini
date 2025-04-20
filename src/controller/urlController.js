@@ -1,114 +1,92 @@
-const { nanoid } =require("nanoid");
-const { urlModel } = require("../model/urlModel");
+const { nanoid } = require("nanoid");
+const urlModel = require("../model/urlModel");
+const AsyncErrorHandler = require("../../utils/AsyncErrorHandler");
+const CustomError = require("../../utils/CustomError");
 
+const urlController = {
+  // Render home page
+  renderHome(req, res) {
+    const user = res.locals.User || null;
+    const page = req.path.split("/")[1] || "";
 
+    res.render("home", {
+      title: "URL-mini | Home",
+      User: user,
+      page,
+    });
+  },
 
-// Render home page
+  // Fetch all URLs for a user
+  viewURL: AsyncErrorHandler(async (req, res, next) => {
+    let user = res.locals.User;    
+    const page = req.path.split("/")[1] || "";
+    const URLlist = await urlModel.find({ UserID: user._id });
+    delete user._id;
+    res.render("dashboard", {
+      title: "URL-mini | Dashboard",
+      User: user,
+      page,
+      data: URLlist,
+    });
+  }),
 
-const renderHome = (req, res) => {
-  const user = { ...res.locals.user, page: req.path.split('/')[0] };
-
-  res.render('home', { User: user || null });
-};
-
-
-// Redirect to full URL based on short ID
-
-const redirectURL = async (req, res) => {
-  try {
+  // Redirect to full URL based on short ID
+  redirectURL: AsyncErrorHandler(async (req, res, next) => {
     const link = await urlModel.findOneAndUpdate(
       { URLShortId: req.params.shortId },
-      { $push: { Visits: { time: Date.now() } } },
+      {
+        $push: {
+          Visits: {
+            time: Date.now(),
+            ipAddress: req.ip || null,
+            userAgent: req.headers["user-agent"],
+          },
+        },
+      },
       { new: true }
     );
-
     if (!link) {
-      return res.status(404).render('error', { error: 'Invalid Short-Link' });
+      return next(new CustomError("Invalid Short-Link", 404));
     }
-
     res.redirect(link.FullURL);
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('error', { error: 'Something went wrong' });
-  }
-};
-  
+  }),
 
-// Generate a new short URL
-
-const generateShortId = async (req, res) => {
-  const { URL } = req.body;
-  const user = res.locals.user;
-
-  if (!URL) {
-    return res.status(400).render('error', { error: 'Invalid URL' });
-  }
-
-  const shortID = nanoid(7);
-
-  try {
+  // Generate a new short URL
+  generateShortId: AsyncErrorHandler(async (req, res, next) => {
+    const { URL } = req.body;
+    const user = res.locals.User;
+    if (!URL) {
+      return next(new CustomError("Invalid URL", 400));
+    }
+    const shortID = nanoid(7);
     await urlModel.create({
       URLShortId: shortID,
       FullURL: URL,
       UserID: user._id,
-      Visits: []
-    });
+      Visits: [],
+    }); 
+    res.redirect("/home/dashboard");
+  }),
 
-    res.status(201).redirect('/home/dashboard');
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('error', { error: 'Failed to create short URL' });
-  }
-};
-
-//Delete the stored URL
-
-const removeUrlRecord=async(req, res)=>{
-  const {id}=req.params;
-  try{
-    const record=await urlModel.findByIdAndDelete({_id:id},{new:true})
-    if(record){
-      req.method='GET'
-      return  res.redirect(204,'/home/dashboard');
+  // Delete the stored URL
+  removeUrlRecord: AsyncErrorHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const record = await urlModel.findByIdAndDelete(id);
+    if (record) {
+      return res.redirect("/home/dashboard");
     }
-    return res.status(500).render('error')
-  }catch(err){
-    console.error(err.message)
-   return res.status(500).render('error')
-  }
+    return next(new CustomError("Cannot delete the record", 400));
+  }),
 
-}
-
-// Fetch all URLs for a user
-const viewURL = async (req, res) => {
-  const user = { ...res.locals.user, page: req.path.split('/')[1] };
-
-  try {
-    const URLlist = await urlModel.find({ UserID: user._id });
-    res.render('dashboard', { data: URLlist, User: user });
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('error', { error: 'Failed to load URLs' });
-  }
+  // Admin-only analytics
+  Analytics: AsyncErrorHandler(async (req, res, next) => {
+    const user = res.locals.User;
+    if (user.User_Role !== "ADMIN") {
+      return res.redirect("../");
+    }
+    const records = await urlModel.find().populate("UserID").exec();
+    res.render("dashboard", { data: records, user });
+  }),
 };
 
-// Admin-only analytics
-const Analytics = async (req, res) => {
-  const user = res.locals.user;
-
-  if (user.User_Role !== 'ADMIN') {
-    return res.redirect('../');
-  }
-
-  try {
-    const records = await urlModel.find().populate('UserID').exec();
-    res.render('dashboard', { data: records, user });
-  } catch (err) {
-    console.error(err);
-    res.status(500).render('error', { error: 'Failed to load analytics' });
-  }
-};
-
-
-
-module.exports={generateShortId, redirectURL, renderHome, viewURL, Analytics, removeUrlRecord };
+module.exports = urlController;

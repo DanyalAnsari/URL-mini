@@ -1,52 +1,45 @@
-const mongoose = require('mongoose');
-const { handlePasswordHashing } = require('../../auth/authentication');
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const {
+  createField,
+  createValidatedField,
+} = require("../../utils/schemaUtils");
+const Validators = require("../validation/mongooseValidators");
 
-// User Schema Definition
-const UserSchema = new mongoose.Schema({
-  Username: {
-    type: String,
-    required: [true, 'Username is required'],
-    trim: true,
-    minlength: [3, 'Username must be at least 3 characters long'],
-    maxlength: [16, 'Username cannot exceed 16 characters'],
-    match: /^[0-9A-Za-z]{3,16}$/, // Alphanumeric between 3-16 char
+const userSchema = new mongoose.Schema(
+  {
+    Username: createValidatedField(String, Validators.Username, {
+      trim: true,
+      minlength: [3, "Username must be at least 3 characters long"],
+      maxlength: [16, "Username cannot exceed 16 characters"],
+    }),
+    Email: createValidatedField(String, Validators.Email, {
+      unique: true,
+      trim: true,
+    }),
+    Password: createField(String),
+    User_Role: createField(String, {
+      enum: ["USER", "ADMIN"],
+      default: "USER",
+      required: false,
+    }),
   },
-  Email: {
-    type: String,
-    required: [true, 'Email is required'],
-    unique: true,
-    trim: true,
-    match: [/^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/, 'Invalid email format'],
-  },
-  Password: {
-    type: String,
-    required: [true, 'Password is required'],
-  },
-  User_Role: {
-    type: String,
-    enum: ['USER', 'ADMIN'],
-    default: 'USER',
-  },
-}, { timestamps: true });
+  { timestamps: true }
+);
 
-// Pre-save middleware to hash the password
-UserSchema.pre('save', async function (next) {
-  const user = this;
-  
-  
-
-  // Hash the password if it has been modified (or is new)
-  if (!user.isModified('Password')) return next();
-
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("Password")) return next();
   try {
-    user.Password = await handlePasswordHashing(user.Password)
+    this.Password = await bcrypt.hash(this.Password, 8);
     next();
   } catch (error) {
-    return next(error);
+    next(error);
   }
 });
 
-// Model Creation
-const User = mongoose.model('User', UserSchema);
+userSchema.method("handlePasswordVerification", async function (inputPassword) {
+  return await bcrypt.compare(inputPassword, this.Password);
+});
 
-module.exports = { User };
+const User =mongoose.models.users || mongoose.model("users", userSchema);
+module.exports = User;

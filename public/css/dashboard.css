@@ -1,0 +1,22 @@
+.bi {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+}
+
+.navbar-brand {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.navbar .form-control {
+  padding: .75rem 1rem;
+}
+
+.copy-success {
+  color: var(--success-color);
+}
+
+.copy-failed {
+  color: var(--error-color);
+}

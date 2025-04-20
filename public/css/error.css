@@ -1,0 +1,68 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Poppins", system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  text-align: center;
+  color: var(--text-color);
+}
+
+.error-container svg {
+  width: 100px;
+  height: 100px;
+  fill: var(--error-color);
+}
+
+.error-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 20px 0;
+  color: var(--error-color);
+}
+
+.error-message {
+  font-size: 1.2rem;
+  color: var(--text-light);
+  margin-bottom: 20px;
+}
+
+.error-button {
+  background-color: var(--black-color);
+  color: var(--white-color);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.error-button:hover {
+  background-color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+  .error-title {
+    font-size: 2rem;
+  }
+
+  .error-message {
+    font-size: 1rem;
+  }
+
+  .error-container svg {
+    width: 80px;
+    height: 80px;
+  }
+}

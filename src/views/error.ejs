@@ -1,91 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- contentFor('head') %>
+<link rel="stylesheet" href="/css/error.css">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <%- include('./partials/commonCSS.ejs') %>
-  <title>Error - URL-mini</title>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: 'Arial', sans-serif;
-      background-color: #f9f9f9;
-    }
-
-    .error-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
-      color: #333;
-    }
-
-    .error-container svg {
-      width: 100px;
-      height: 100px;
-      fill: #cb0202;
-    }
-
-    .error-title {
-      font-size: 2.5rem;
-      font-weight: bold;
-      margin: 20px 0;
-      color: #cb0202;
-    }
-
-    .error-message {
-      font-size: 1.2rem;
-      color: #666;
-      margin-bottom: 20px;
-    }
-
-    .error-button {
-      background-color: #000000;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      text-decoration: none;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .error-button:hover {
-      background-color: #9dabbb;
-    }
-
-    @media (max-width: 768px) {
-      .error-title {
-        font-size: 2rem;
-      }
-
-      .error-message {
-        font-size: 1rem;
-      }
-
-      .error-container svg {
-        width: 80px;
-        height: 80px;
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <div class="error-container">
-    <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-    <h1 class="error-title">Oops! Something Went Wrong</h1>
-    <p class="error-message">
-      <%= error %>
-    </p>
-    <a href="/" class="error-button">Return to Homepage</a>
-  </div>
-</body>
-
-</html>
+<%- contentFor('body') %>
+<div class="error-container">
+  <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:">
+    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+      <path d="M8.982 1.566a1.13 1.13 0 0 0-1.964 0L.165 13.233c-.457.778.091 1.767.982 1.767h13.707c.89 0 1.438-.99.982-1.767L8.982 1.566zm-1.002 4.905a.905.905 0 1 1 1.81 0l-.35 3.507a.552.552 0 0 1-1.11 0l-.35-3.507zm.002 6.002a1 1 0 1 1 2 0 1 1 0 0 1-2 0z"/>
+    </symbol>
+    <use xlink:href="#exclamation-triangle-fill"/>
+  </svg>
+  <h1 class="error-title">Oops! Something Went Wrong</h1>
+  <p class="error-message"><%= error %></p>
+  <a href="/" class="error-button">Return to Homepage</a>
+</div>

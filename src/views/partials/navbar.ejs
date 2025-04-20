@@ -1,13 +1,20 @@
-<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background:#121212;"
-  aria-label="Eighth navbar example">
+<% console.log(locals.User) %>
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
   <div class="container">
     <a class="navbar-brand" href="#">URL-mini</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample07"
-      aria-controls="navbarsExample07" aria-expanded="false" aria-label="Toggle navigation">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarMain"
+      aria-controls="navbarMain"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarsExample07">
+    <div class="collapse navbar-collapse" id="navbarMain">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="#">Home</a>
@@ -19,18 +26,29 @@
           <a class="nav-link" href="#Features">Features</a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Account</a>
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            >Account</a
+          >
           <ul class="dropdown-menu">
             <% if(!locals.User) { %>
-              <li><a class="dropdown-item" href="/home/user/signin">Sign-In</a></li>
-              <li><a class="dropdown-item" href="/home/user/signup">Create Acoount</a></li>
-              <% }else if (locals.User.page==='' ) {%>
-                <li><a class="dropdown-item" href="home/dashboard">Dashboard</a></li>
-                <li><a class="dropdown-item" href="/home/user/signout">Sign-Out</a></li>
-                <% } else if (locals.User.page==='dashboard' ) { %>
-                  <li><a class="dropdown-item" href="/">Home</a></li>
-                  <li><a class="dropdown-item" href="/home/user/signout">Sign-Out</a></li>
-                  <% } %></ul>
+            <li><a class="dropdown-item" href="/user/signin">Sign-In</a></li>
+            <li>
+              <a class="dropdown-item" href="/user/signup">Create Account</a>
+            </li>
+            <% } else if (locals.page === '' || locals.page === 'home') { %>
+            <li>
+              <a class="dropdown-item" href="/home/dashboard">Dashboard</a>
+            </li>
+            <li><a class="dropdown-item" href="/user/signout">Sign-Out</a></li>
+            <% } else if (locals.page === 'dashboard') { %>
+            <li><a class="dropdown-item" href="/home">Home</a></li>
+            <li><a class="dropdown-item" href="/user/signout">Sign-Out</a></li>
+            <% } %>
+          </ul>
         </li>
       </ul>
     </div>

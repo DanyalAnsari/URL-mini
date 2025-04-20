@@ -1,39 +1,32 @@
-const mongoose=require("mongoose");
-const urlSchema=new mongoose.Schema({
-    FullURL:{
-        type:String,
-        required:true
-    },
-    URLShortId:{
-        type:String,
-        required:true,
-        unique:true
-    },
-    UserID:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'User',
-        requred:true
-    },
-    Visits:[{
-        time:{
-        type:Number
-    }
-}]},{timeStamp:true});
+const mongoose = require("mongoose");
+const {
+  createField,
+  createValidatedField,
+} = require("../../utils/schemaUtils");
+const Validators = require("../validation/mongooseValidators");
 
-urlSchema.pre('save', function(next){
-    const url=this;
+const visitSchema = new mongoose.Schema(
+  {
+    time: createField(Date, { default: Date.now }),
+    ipAddress: createValidatedField(String, Validators.IPAddress),
+    userAgent: createValidatedField(String, Validators.UserAgent),
+  },
+  { _id: false }
+);
 
-    url.FullURL=url.FullURL.trim();
-    const urlRegex=/^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+)(\/.*)?$/;
-    if(urlRegex.test(url.FullURL)){
-       return next()
-    }else{
-        return next(new Error('Invalid URL format'));
-    }
+const urlSchema = new mongoose.Schema(
+  {
+    FullURL: createValidatedField(String, Validators.URL, { trim: true }),
+    URLShortId: createField(String, {
+      unique: true,
+      minlength: [6, "Short ID must be at least 6 characters long"],
+      maxlength: [10, "Short ID cannot exceed 10 characters"],
+    }),
+    UserID: createField(mongoose.Schema.Types.ObjectId, { ref: "User" }),
+    Visits: [visitSchema],
+  },
+  { timestamps: true }
+);
 
-})
-
-const urlModel= mongoose.model('url',urlSchema);
-
-
-module.exports={urlModel}
+const urlModel = mongoose.model("Url", urlSchema);
+module.exports = urlModel;

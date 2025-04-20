@@ -1,157 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- contentFor('head') %>
+<link rel="stylesheet" href="/css/dashboard.css">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <%- include('./partials/commonCSS.ejs') %>
-  <style>
-    .bi {
-      display: inline-block;
-      width: 1rem;
-      height: 1rem;
-    }
+<%- contentFor('body') %>
+<navbar>
+  <%- include('./partials/dashboardNavbar.ejs') %>
+</navbar>
+<header>
+  <%- include('./partials/dashboardHeader.ejs') %>
+</header>
 
-    .navbar-brand {
-      padding-top: 1rem;
-      padding-bottom: 1rem;
-    }
-
-    .navbar .form-control {
-      padding: .75rem 1rem;
-    }
-
-    .copy-success {
-      color: green;
-    }
-
-    .copy-failed {
-      color: red;
-    }
-  </style>
-  <title>URL-mini</title>
-</head>
-
-<body>
-  <navbar>
-    <%- include('./partials/dashboardNavbar.ejs') %>
-  </navbar>
-  <header>
-    <%- include('./partials/dashboardHeader.ejs') %>
+<section>
+  <header class="navbar bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">URL-mini</a>
   </header>
+</section>
 
-  <section>
-    <header class="navbar bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">URL-mini</a>
-    </header>
-  </section>
-
-  <section class="px-4 py-3">
-    <h2>Statistics</h2>
-    <div class="table-responsive" id="Statistics">
-      <table class="table table-hover table-sm align-middle">
-        <thead class="table-dark">
+<section class="px-4 py-3">
+  <h2>Statistics</h2>
+  <div class="table-responsive" id="Statistics">
+    <table class="table table-hover table-sm align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Actions</th>
+          <th scope="col">Short ID</th>
+          <th scope="col">Visits</th>
+          <th scope="col" colspan="2">Redirected URL</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        <% if (data && data.length> 0) { %>
+        <% data.forEach((URL, index)=> { %>
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">Actions</th>
-            <th scope="col">Short ID</th>
-            <th scope="col">Visits</th>
-            <th scope="col" colspan="2">Redirected URL</th>
-          </tr>
-        </thead>
-        <tbody class="table-group-divider">
-          <% if (data && data.length> 0) { %>
-          <% data.forEach((URL, index)=> { %>
-            <tr>
-            <th scope="row">
-              <%= index + 1 %>
-            </th>
-            <td colspan="1">
-              <button type="button" class="btn copy" aria-label="Copy URL"
-              data-bs-toggle="popover" data-bs-content="Copied!"
-              data-url="<%= URL.URLShortId %>" data-id="<%= URL._id %>">
-              <svg class="bi d-block mx-auto mb-1" width="24" height="24">
-                <use xlink:href="#copy" />
-              </svg>
-            </button>
-          
-            <button class="btn delete" aria-label="Delete URL" data-id="<%= URL._id %>">
-              <svg class="bi d-block mx-auto mb-1" width="24" height="24">
-                <use xlink:href="#delete" />
-              </svg>
-            </button>
-          </td>
-          <td>
-            <a href="/url/<%= URL.URLShortId %>" id="short-id-<%= index + 1 %>">
-              <%= URL.URLShortId %>
-            </a>
-          </td>
-          <td>
-            <%= URL.Visits.length %>
-          </td>
-          <td colspan="2">
-            <%= URL.FullURL %>
-          </td>
-          </tr>
-          <% }) %>
-          <% } else { %>
-          <tr>
-            <td colspan="6" class="text-center">No URLs found</td>
-          </tr>
-          <% } %>
-        </tbody>
-      </table>
-    </div>
-  </section>
+          <th scope="row">
+            <%= index + 1 %>
+          </th>
+          <td colspan="1">
+            <button type="button" class="btn copy" aria-label="Copy URL"
+            data-bs-toggle="popover" data-bs-content="Copied!"
+            data-url="<%= URL.URLShortId %>" data-id="<%= URL._id %>">
+            <%- iconHelper.render('copy') %>
+          </button>
+        
+          <button class="btn delete" aria-label="Delete URL" data-id="<%= URL._id %>">
+            <%- iconHelper.render('delete') %>
+          </button>
+        </td>
+        <td>
+          <a href="/url/<%= URL.URLShortId %>" id="short-id-<%= index + 1 %>">
+            <%= URL.URLShortId %>
+          </a>
+        </td>
+        <td>
+          <%= URL.Visits.length %>
+        </td>
+        <td colspan="2">
+          <%= URL.FullURL %>
+        </td>
+        </tr>
+        <% }) %>
+        <% } else { %>
+        <tr>
+          <td colspan="6" class="text-center">No URLs found</td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
 
-  <script>
-    document.querySelector('#Statistics').addEventListener('click', async function (e) {
-      const target = e.target.closest('button'); // Check if it's a button (copy or delete)
-      if (!target) return; // If not a button, exit
-
-      // Copy URL logic
-      if (target.classList.contains('copy')) {
-        const shortId = target.getAttribute('data-url');
-        const fullURL = `${window.location.origin}/url/${shortId}`;
-        try {
-          await navigator.clipboard.writeText(fullURL);
-          showPopover(target, 'Copied!', 'copy-success');
-        } catch (err) {
-          console.error('Failed to copy: ', err);
-          showPopover(target, 'Copy failed', 'copy-failed');
-        }
-      }
-
-      // Delete URL logic
-      else if (target.classList.contains('delete')) {
-        const id = target.getAttribute('data-id');
-        try {
-          const response = await fetch(`${window.location.origin}/url/${id}`, { method: 'DELETE' });
-          if (response.ok) {
-            window.location.reload();
-          } else {
-            console.error('Failed to delete URL');
-          }
-        } catch (error) {
-          console.error('Error deleting URL:', error);
-        }
-      }
-    });
-
-    // Function to show popover and change button state temporarily
-    function showPopover(button, message, statusClass) {
-      const popover = new bootstrap.Popover(button, { content: message, trigger: 'manual' });
-      button.classList.add(statusClass); // Add status class (success or failed)
-      popover.show();
-
-      // Hide popover and reset button after 2 seconds
-      setTimeout(() => {
-        popover.hide();
-        button.classList.remove(statusClass); // Remove status class
-        button.disabled = false;
-      }, 2000);
-    }
-  </script>
-</body>
-
-</html>
+<%- contentFor('customScripts') %>
+<script src="/js/dashboard.js"></script> 

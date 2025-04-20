@@ -1,116 +1,96 @@
-const { User } = require("../model/userModel");
-const {
-    handlePasswordVerification,
-    handleTokenGeneration,
-} = require("../../auth/authentication");
-const { urlModel } = require("../model/urlModel");
+const User = require("../model/userModel");
+const urlModel = require("../model/urlModel");
+const AsyncErrorHandler = require("../../utils/AsyncErrorHandler");
+const CustomError = require("../../utils/CustomError");
+const handleTokenGeneration = require("../../utils/authentication");
 
-// Render Signup (Registration) Page
-const renderRegistrationView = (req, res) => {
-    res.status(200).render("signup");
-};
+const userController = {
+  // Render Signup (Registration) Page
+  renderRegistrationView: (req, res) => {
+    return res.status(200).render("auth", {
+      title: "URL-mini | Register",
+      activeTab: "signup",
+    });
+  },
 
-// Render Login Page
-const renderLoginView = (req, res) => {
-    res.status(200).render("signin");
-};
+  // Render Login Page
+  renderLoginView: (req, res) => {
+    res.status(200).render("auth", {
+      title: "URL-mini | Login",
+      activeTab: "signin",
+    });
+  },
 
-// Handle User Registration
-const handleRegistration = async (req, res) => {
+  // Handle User Registration
+  handleRegistration: AsyncErrorHandler(async (req, res, next) => {
     const { Username, Email, Password } = req.body;
-
-    // Check if all fields are provided
-    if (!Username || !Email || !Password) {
-        return res.status(400).render("signup", { error: "All fields are required." });
+    const existingUser = await User.findOne({ Email });
+    if (existingUser) {
+      return next(new CustomError("User already exists", 400));
     }
+    const newUser = await User.create({ Username, Email, Password });
+    const token = handleTokenGeneration(newUser);
+    res
+      .status(201)
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+      })
+      .redirect("../home/dashboard");
+  }),
 
-    try {
-        // Check if a user with the same email already exists
-        const existingUser = await User.findOne({ Email });
-        if (existingUser) {
-            return res.render("signup", { error: "User already exists." });
-        }
-        // Hash the password and create the user        
-        const newUser = await User.create({Username:Username,
-            Email:Email,
-            Password:Password
-        });
-        const token = handleTokenGeneration(newUser);
-        res.status(201).cookie("token", token, { httpOnly: true, secure: true }).redirect("../dashboard");
-
-    } catch (error) {
-        console.error("Registration Error:", error);
-        res.status(500).render("signup", { error: "Something went wrong. Please try again." });
-    }
-};
-
-// Handle User Login
-const handleLogin = async (req, res) => {
+  // Handle User Login
+  handleLogin: AsyncErrorHandler(async (req, res, next) => {
     const { Email, Password } = req.body;
 
-    // Validate if both email and password are provided
-    if (!Email || !Password) {
-        return res.status(400).render('signin', { error: 'All fields are required.' });
-    }
-
-    try {
-        // Check if the user exists in the database
-        const user = await User.findOne({Email:Email})
-        if (user) {
-            const isValid = handlePasswordVerification(Password, user.Password);
-            if (isValid) {
-                const token = handleTokenGeneration(user);
-                return res.status(200).cookie("token", token).redirect("../dashboard");
-            } else {
-                return res.status(404).render("signin", { error: "Email or Password not valid" });
-            }
-        } else {
-            return res.status(404).render("signin", { error: "User not found" });
-        }
-    } catch (error) {
-        console.error(error.message);
-        res.status(500).render("signin", { error: "Something went wrong" });
-    }
-};
-
-const handleLogOut = (req, res) => {
-    try {
-        return res.clearCookie("token").redirect("../");
-    } catch (error) {
-        console.log(error.message);
-        return res.render("error", { error: "Something went wrong" });
-    }
-};
-
-const handleUserDeletion = async (req, res) => {
-    const user = res.locals.user;
+    const user = await User.findOne({ Email });
     if (!user) {
-        return res
-            .status(404)
-            .render("error", { error: "User not found or Bad request" });
+      return next(new CustomError("User not found", 404));
     }
+
+    const isValid = await user.handlePasswordVerification(Password);
+    if (!isValid) {
+      return next(new CustomError("Email or Password not valid", 401));
+    }
+
+    const token = handleTokenGeneration(user);
+    return res
+      .status(200)
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+      })
+      .redirect("../home/dashboard");
+  }),
+
+  // Handle Logout
+  handleLogOut(req, res) {
     try {
-        const DeleteUser = await User.findOne({ _id: user.id });
-        if (User) {
-            const isDeletedUser = await User.deleteOne({ _id: DeleteUser._id });
-            if (isDeletedUser) {
-                const deletedRecords = await urlModel.deleteMany({
-                    UserID: isDeletedUser._id,
-                });
-                return res.redirect("/home");
-            }
-        }
-        return res.redirect("../");
+      return res.clearCookie("token").redirect("../");
     } catch (error) {
-        console.log(error.message);
-        return res.redirect("error", { error: "Something went wrong" });
+      return next(error);
     }
+  },
+
+  // Handle User Deletion
+  handleUserDeletion: AsyncErrorHandler(async (req, res, next) => {
+    const user = res.locals.User;
+    if (!user) {
+      return next(new CustomError("Please login to continue", 400));
+    }
+
+    const DeleteUser = await User.findOne({ _id: user.id });
+    if (!DeleteUser) {
+      return next(new CustomError("User not found", 404));
+    }
+
+    const isDeleted = await User.deleteOne({ _id: DeleteUser._id });
+    if (isDeleted) {
+      await urlModel.deleteMany({ UserID: DeleteUser._id });
+      return res.redirect("/home");
+    }
+    return res.redirect("../");
+  }),
 };
-module.exports = {
-    renderLoginView,
-    renderRegistrationView,
-    handleLogin,
-    handleRegistration,
-    handleLogOut,
-    handleUserDeletion,
-};
+
+module.exports = userController;

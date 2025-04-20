@@ -1,0 +1,218 @@
+body, .signup{
+  color: var(--text-color);
+  background-color:#fff;
+}
+
+.main {
+  padding: 150px 0;
+}
+.container {
+  width: 900px;
+  max-width: 100%;
+  background: var(--white-color);
+  margin: 0 auto;
+  box-shadow: var(--shadow);
+  border-radius: var(--border-radius);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  padding: 15px 39px;
+  border-radius: 5px;
+  margin-top: 25px;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+.signup-image-link,
+.signin-image-link {
+  font-size: 14px;
+  color: var(--text-color);
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+.signup-image-link:hover,
+.signin-image-link:hover {
+  color: var(--primary-color);
+}
+.form-title {
+  line-height: 1.66;
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+  color: var(--text-color);
+  font-size: 36px;
+  margin-bottom: 33px;
+}
+.social-login {
+  display: flex;
+  align-items: center;
+  margin-top: 80px;
+}
+.social-label {
+  display: inline-block;
+  margin-right: 15px;
+  color: var(--text-light);
+}
+.socials {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+.socials li {
+  padding: 5px;
+}
+.socials li a {
+  text-decoration: none;
+}
+.socials li a i {
+  width: 30px;
+  height: 30px;
+  color: var(--white-color);
+  font-size: 14px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+.socials li:hover a i {
+  transform: scale(1.3);
+}
+.zmdi-facebook {
+  background: var(--black-color);
+}
+.zmdi-twitter {
+  background: var(--text-light);
+}
+.zmdi-google {
+  background: var(--black-color);
+}
+.signup-content, 
+.signin-content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto;
+  padding: 75px 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.signup-form,
+.signup-image,
+.signin-form,
+.signin-image {
+  width: 50%;
+  overflow: hidden;
+}
+.signup-image,
+.signin-image {
+  margin: 0 55px;
+  text-align: center;
+}
+.signup-form {
+  margin-left: 75px;
+  margin-right: 75px;
+  padding-left: 34px;
+}
+.signin-form {
+  margin-right: 90px;
+  margin-left: 80px;
+}
+
+@media screen and (max-width: 768px) {
+  .signup-content,
+  .signin-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .signup-form,
+  .signin-form {
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0 30px;
+  }
+  .signup-image,
+  .signin-image {
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 50px;
+    order: 2;
+  }
+  .signup-form,
+  .signup-image,
+  .signin-form,
+  .signin-image {
+    width: auto;
+  }
+  .social-login {
+    justify-content: center;
+  }
+  .form-button {
+    text-align: center;
+  }
+  .signin-form {
+    order: 1;
+  }
+  .form-title {
+    text-align: center;
+  }
+}
+
+/* Custom validation styles */
+.is-invalid {
+  border-bottom: 1px solid var(--error-color) !important;
+}
+.is-valid {
+  border-bottom: 1px solid var(--success-color) !important;
+}
+.invalid-feedback {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: var(--error-color);
+}
+
+/* Form Label Group Fixes - Added for icon positioning and validation */
+.form-label-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.form-label-group .input-wrapper {
+  position: relative;
+}
+
+.form-label-group i {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  pointer-events: none; /* Ensures the icon doesn't interfere with clicking the input */
+}
+
+.form-label-group input {
+  padding-left: 35px;
+  width: 100%;
+  background-color: #fff !important; /* Force white background */
+}
+
+/* Override Bootstrap validation styles */
+.form-label-group input.is-valid,
+.form-label-group input.is-invalid {
+  background-position: right calc(0.375em + 0.1875rem) center !important;
+  background-color: #fff !important;
+}
+
+.feedback-container {
+  width: 100%;
+  min-height: 1.5rem; /* Reserve space for feedback */
+}

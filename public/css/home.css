@@ -1,0 +1,121 @@
+/* Header Section */
+.head {
+  position: relative;
+  min-height: 300px;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Cover Container */
+.cover-container {
+  max-width: 42em;
+  position: relative;
+  z-index: 3;
+}
+
+/* Wave Container */
+.wave-container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Hero Section */
+.hero-section,
+.cover-container {
+  position: relative;
+  z-index: 2;
+}
+
+/* Animations */
+.path-0 {
+  animation: pathAnim-0 4s linear infinite;
+}
+
+.path-1 {
+  animation: pathAnim-1 4s linear infinite;
+}
+
+/* Wave Animations */
+@keyframes pathAnim-0 {
+  0%,
+  100% {
+    d: path(
+      "M 0,700 L 0,175 C 169.47,206.2 338.93,237.4 519,227 C 699.07,216.6 889.73,164.6 1045,149 C 1200.27,133.4 1320.13,154.2 1440,175 L 1440,700 L 0,700 Z"
+    );
+  }
+  25% {
+    d: path(
+      "M 0,700 L 0,175 C 150.8,195.53 301.6,216.07 461,205 C 620.4,193.93 788.4,151.27 953,141 C 1117.6,130.73 1278.8,152.87 1440,175 L 1440,700 L 0,700 Z"
+    );
+  }
+  50% {
+    d: path(
+      "M 0,700 L 0,175 C 177.47,177.53 354.93,180.07 496,191 C 637.07,201.93 741.73,221.27 893,220 C 1044.27,218.73 1242.13,196.87 1440,175 L 1440,700 L 0,700 Z"
+    );
+  }
+  75% {
+    d: path(
+      "M 0,700 L 0,175 C 139.33,153 278.67,131 443,136 C 607.33,141 796.67,173 967,184 C 1137.33,195 1288.67,185 1440,175 L 1440,700 L 0,700 Z"
+    );
+  }
+}
+
+@keyframes pathAnim-1 {
+  0%,
+  100% {
+    d: path(
+      "M 0,700 L 0,408 C 160.93,412.13 321.87,416.27 475,416 C 628.13,415.73 773.47,411.07 933,409 C 1092.53,406.93 1266.27,407.47 1440,408 L 1440,700 L 0,700 Z"
+    );
+  }
+  25% {
+    d: path(
+      "M 0,700 L 0,408 C 163.87,411.6 327.73,415.2 488,406 C 648.27,396.8 804.93,374.8 963,373 C 1121.07,371.2 1280.53,389.6 1440,408 L 1440,700 L 0,700 Z"
+    );
+  }
+  50% {
+    d: path(
+      "M 0,700 L 0,408 C 113.87,386.67 227.73,365.33 392,359 C 556.27,352.67 770.93,361.33 954,372 C 1137.07,382.67 1288.53,395.33 1440,408 L 1440,700 L 0,700 Z"
+    );
+  }
+  75% {
+    d: path(
+      "M 0,700 L 0,408 C 164.53,371.07 329.07,334.13 479,330 C 628.93,325.87 764.27,354.53 922,373 C 1079.73,391.47 1259.87,399.73 1440,408 L 1440,700 L 0,700 Z"
+    );
+  }
+}
+
+/* Section Specific Styles */
+#About {
+  background-color: var(--black-color);
+  color: var(--white-color);
+}
+
+#Features {
+  background-color: var(--white-color);
+  color: var(--text-color);
+}
+
+.feature {
+  transition: transform 0.3s ease;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+}
+
+/* Responsive Design for Homepage */
+@media (min-width: 720px) {
+  .cover-container {
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    transform: translateX(-50%);
+    z-index: 5;
+  }
+}
+
+/* Navbar Toggler Overrides */
+.navbar-toggler-icon {
+  height: 1em;
+  width: 1em;
+}
