@@ -6,10 +6,10 @@
 <%- include('./partials/wave.ejs') %>
 
 <!-- Hero Section -->
-<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column text-white">
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
   <header class="mb-auto px-3">
-    <h1 class="display-4">Simplify your URLs.</h1>
-    <p class="lead">Welcome to <span class="text-primary">URL-mini</span>, your powerful URL shortener</p>
+    <h1 class="display-4 fw-bold">Simplify your URLs.</h1>
+    <p class="lead fw-semibold">Welcome to <span class="text-primary">URL-mini</span>, your powerful URL shortener</p>
     <a href="<%= locals.User ? '/home/dashboard' : '/user/signup' %>" 
        class="btn btn-primary btn-lg px-4 mt-3">
       Get Started <i class="bi bi-arrow-right"></i>
